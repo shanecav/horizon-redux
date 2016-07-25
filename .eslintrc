@@ -1,0 +1,19 @@
+{
+  "parser"  : "babel-eslint",
+  "extends" : [
+    "standard"
+  ],
+  "plugins": [
+    "flowtype"
+  ],
+  "env"     : {
+    "browser" : true,
+    "node": true
+  },
+  "globals" : {
+    "expect": true
+  },
+  "rules": {
+    "semi" : [2, "never"]
+  }
+}
