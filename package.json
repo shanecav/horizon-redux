@@ -1,12 +1,13 @@
 {
   "name": "horizon-redux",
-  "version": "1.0.0",
-  "description": "A small library that helps you bind Horizon.io server emits to Redux actions, and Redux actions to Horizon.io client Collection methods.",
+  "version": "1.0.1",
+  "description": "A small library that helps you connect Horizon.io with Redux in a flexible, non-intrusive way.",
   "main": "lib/index.js",
   "files": [
     "dist",
     "lib",
-    "src"
+    "src",
+    "types"
   ],
   "scripts": {
     "clean": "rimraf lib dist es",

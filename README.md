@@ -60,7 +60,7 @@ HorizonRedux.setupSubscriptionActions(
 
 #### Arguments:
 
-1. `horizonInstance` - A Horizon.io client instance
+1. `horizonInstance` - A Horizon.io client instance.
 2. `config` - An object where each key is an action type, and each corresponding value is a function that takes a horizon instance, action, and Redux store dispatch method as arguments and runs a Horizon Collection query.
 
 Example:
@@ -83,9 +83,9 @@ const hzMiddleware = HorizonRedux.createMiddleware(horizonInstance, {
 1. `horizonInstance` - A Horizon.io client instance
 2. `dispatch` - Redux store dispatch method
 3. `config` - An array of objects with the following properties:
-  * `query` - function that takes a Horizon instance and returns a Horizon query without .subscribe() method
-  * `actionCreator` - function that takes Horizon query result data and returns an action using that data
-  * `onQueryError` - (optional) function that takes a Horizon query error and handles it
+  * `query` - Function that takes a Horizon instance and returns a Horizon query without .subscribe() method.
+  * `actionCreator` - Function that takes Horizon query result data and returns an action using that data.
+  * `onQueryError` - (optional) Function that takes a Horizon query error and handles it. Defaults to `(err) => throw new Error(err)`.
 
 Example:
 ```js
