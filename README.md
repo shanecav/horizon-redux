@@ -2,6 +2,7 @@
 A small library that helps you connect Horizon.io with Redux in a flexible, non-intrusive way.
 
 [![Build Status](https://travis-ci.org/shanecav/horizon-redux.svg?branch=master)](https://travis-ci.org/shanecav/horizon-redux)
+[![Coverage Status](https://coveralls.io/repos/github/shanecav/horizon-redux/badge.svg?branch=master)](https://coveralls.io/github/shanecav/horizon-redux?branch=master)
 
 ## What does it do?
 horizon-redux provides a light-weight (<1kb minified + gzipped) and flexible interface for connecting Redux with [Horizon.io](http://horizon.io/). It accomplishes this by providing two functions: `createMiddleware` and `setupSubscriptionActions`.
@@ -55,7 +56,7 @@ HorizonRedux.setupSubscriptionActions(
 
 ## API
 
-### createMiddleware(horizon, config)
+### createMiddleware(horizonInstance, config)
 
 #### Arguments:
 
