@@ -5,13 +5,15 @@ A small library that helps you connect Horizon.io with Redux in a flexible, non-
 [![Coverage Status](https://coveralls.io/repos/github/shanecav/horizon-redux/badge.svg?branch=master)](https://coveralls.io/github/shanecav/horizon-redux?branch=master)
 
 ## What does it do?
-horizon-redux provides a light-weight (<1kb minified + gzipped) and flexible interface for connecting Redux with [Horizon.io](http://horizon.io/). It accomplishes this by providing two functions: `createMiddleware` and `setupSubscriptionActions`.
+horizon-redux provides a light-weight (<1kb minified + gzipped) and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It accomplishes this by providing two functions: `createMiddleware` and `setupSubscriptionActions`.
 
 `createMiddleware` is used to create a Redux middleware that watches for specific actions, and makes corresponding Horizon queries when they're dispatched.
 
-`setupSubscriptionActions` is used to register Horizon query subscriptions to respond by dispatching corresponding actions every time the subscription receives new data. The subscription can be a one-time `fetch()`, or a continuous `watch()`.
+`setupSubscriptionActions` is used to create Horizon query subscriptions that respond by dispatching corresponding actions every time the subscription receives new data. Subscriptions can be a one-time `fetch()`, or a continuous `watch()`.
 
-This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings directly to your UI components. That way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
+This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
+
+horizon-redux has zero npm dependencies, and its only requirements are Horizon.io and Redux.
 
 ## Installation
 
