@@ -11,6 +11,7 @@ type Config = {
 /**
  * Create middleware that intercepts specific actions and runs corresponding Horizon queries
  *
+ * @param {HorizonInstance} horizon - instance of Horizon.io client
  * @param {object} config - Object where each key is an action type, and each corresponding value is a function that takes a horizon instance, action, and Redux store dispatch method as arguments and runs a Horizon Collection query.
  * @returns {function} Redux middleware
  */

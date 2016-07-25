@@ -1,4 +1,9 @@
 {
   "presets": ["es2015"],
-  "plugins": ["transform-flow-strip-types"]
+  "plugins": ["transform-flow-strip-types"],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
 }
