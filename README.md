@@ -7,7 +7,7 @@ A small library that helps you connect Horizon.io with Redux in a flexible, non-
 ## What does it do?
 horizon-redux provides a light-weight (<1kb minified + gzipped) and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It accomplishes this by providing two functions: `createMiddleware` and `setupSubscriptionActions`.
 
-`createMiddleware` is used to create a Redux middleware that watches for specific actions, and makes corresponding Horizon queries when they're dispatched.
+`createMiddleware` is used to create a Redux middleware that watches for specific actions, and makes corresponding Horizon queries when those actions are dispatched.
 
 `setupSubscriptionActions` is used to create Horizon query subscriptions that respond by dispatching corresponding actions every time the subscription receives new data. Subscriptions can be a one-time `fetch()`, or a continuous `watch()`.
 
@@ -60,12 +60,18 @@ HorizonRedux.setupSubscriptionActions(
 
 ### createMiddleware(horizonInstance, config)
 
+Creates a Redux middleware that watches for specific actions, and makes corresponding Horizon queries when those actions are dispatched. (The action is always pushed through the middleware chain, so other middlewares/reducers can respond to it as well if needed.)
+
 #### Arguments:
 
 1. `horizonInstance` - A Horizon.io client instance.
 2. `config` - An object where each key is an action type, and each corresponding value is a function that takes a horizon instance, action, and Redux store dispatch method as arguments and runs a Horizon Collection query.
 
-Example:
+#### Returns:
+
+Redux middleware
+
+#### Example:
 ```js
 const hzMiddleware = HorizonRedux.createMiddleware(horizonInstance, {
   [ADD_MESSAGE_REQUEST]: (horizon, action, dispatch) => {
@@ -78,7 +84,11 @@ const hzMiddleware = HorizonRedux.createMiddleware(horizonInstance, {
 })
 ```
 
+---
+
 ### setupSubscriptionActions(horizonInstance, dispatch, config)
+
+Creates Horizon query subscriptions that respond by dispatching corresponding actions every time the subscription receives new data. Subscriptions can be a one-time `fetch()`, or a continuous `watch()`.
 
 #### Arguments:
 
@@ -89,7 +99,12 @@ const hzMiddleware = HorizonRedux.createMiddleware(horizonInstance, {
   * `actionCreator` - Function that takes Horizon query result data and returns an action using that data.
   * `onQueryError` - (optional) Function that takes a Horizon query error and handles it. Defaults to `(err) => throw new Error(err)`.
 
-Example:
+#### Returns:
+
+n/a
+
+#### Example:
+
 ```js
 HorizonRedux.setupSubscriptionActions(horizonInstance, store.dispatch, [
   {
