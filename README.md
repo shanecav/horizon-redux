@@ -1,3 +1,6 @@
+> ### Version 2.0 coming soon
+> Almost immediately after releasing 1.0 I've noticed some limitations. 2.0 will have more flexibility and power, as well as a simpler API. Win-win!
+
 # horizon-redux
 A small library that helps you connect Horizon.io with Redux in a flexible, non-intrusive way.
 
