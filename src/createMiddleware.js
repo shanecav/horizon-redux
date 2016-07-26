@@ -26,17 +26,17 @@ export default (horizon: HorizonInstance, config: Config) => {
 
   // create middleware that intercepts and handles write actions
   const middleware = ({ dispatch, getState }: Store) => (next: Dispatch) => (action: Action) => {
-    // if this action type corresponds to one of the keys of the config arg object
+    // if this action type corresponds to one of the keys of the config object
     if (action.type && config[action.type] !== undefined) {
       if (typeof config[action.type] !== 'function') {
         throw new Error('Each property of the createMiddleware configuration object must be a function that accepts an action object and uses it to run a Horizon query.')
       }
 
-      // run the query (dispatch is provided for success/error handlers).
-      // FYI return value isn't used anywhere.
-      return config[action.type](horizon, action, dispatch)
+      // run the query (dispatch is provided for success/error handlers)
+      config[action.type](horizon, action, dispatch)
     }
-    // otherwise this action is unrelated
+    // pass the action along regardless if it's a horizon-react action or not,
+    // so other middlewares/reducers can receive it if needed (it's still a plain action)
     return next(action)
   }
 

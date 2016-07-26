@@ -55,11 +55,20 @@ describe('horizon-redux createMiddleware', () => {
         })
 
         it('must run the function from config whose key matches the action type', () => {
-          const actionHandler = nextHandler()
+          const next = () => null
+          const actionHandler = nextHandler(next)
           const configFunctionSpy = spy(validConfig, 'SOME_ACTION')
 
           actionHandler({ type: 'SOME_ACTION' })
           expect(configFunctionSpy.called).to.be.true
+        })
+
+        it('must pass action to next even if matching config key found', () => {
+          const next = spy()
+          const actionHandler = nextHandler(next)
+
+          actionHandler({ type: 'SOME_ACTION' })
+          expect(next.called).to.be.true
         })
 
         it('must pass action to next if no matching config key found', () => {
