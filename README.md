@@ -19,6 +19,10 @@ horizon-redux has zero npm dependencies, and its only requirements are Horizon.i
 
 `npm i -S horizon-redux`
 
+Alternatively:
+
+`<script src="https://npmcdn.com/horizon-redux/dist/horizon-redux.min.js"></script>` (exposes window.HorizonRedux as a global variable)
+
 ## Usage
 
 ```js
@@ -26,7 +30,7 @@ import { compose, applyMiddleware, createStore } from 'redux'
 import Horizon from '@horizon/client'
 import HorizonRedux from 'horizon-redux'
 
-import { ADD_MESSAGE, addMessageSuccess, addMessageFailure, newMessages } from '../actions/chat'
+import { ADD_MESSAGE, newMessages } from '../actions/chat'
 
 const hz = Horizon({ host: 'localhost:8181' })
 
@@ -120,4 +124,4 @@ HorizonRedux.setupSubscriptionActions(horizonInstance, store.dispatch, [
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.md)
