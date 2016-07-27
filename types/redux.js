@@ -8,9 +8,9 @@ export type State = any
 export type ActionType = string|Symbol
 export type Action = {
   type: ActionType,
-  payload: ?any,
-  error: ?boolean,
-  meta: ?any
+  payload?: any,
+  error?: boolean,
+  meta?: any
 }
 export type Reducer<State, Action> = (state: State, action: Action) => State
 export type Dispatch = (a: Action) => any

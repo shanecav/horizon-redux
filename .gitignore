@@ -5,4 +5,7 @@ dist
 lib
 es
 coverage
+examples/*/node_modules
+examples/*/rethinkdb_data
+examples/*/.hz
 .nyc_output

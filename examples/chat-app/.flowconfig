@@ -1,0 +1,31 @@
+[ignore]
+#internals
+.*/internals/
+
+# fbjs nonsense
+.*node_modules/fbjs.*
+.*node_modules/fbjs/lib
+
+# Flow has a built-in definition for the 'react' module which we prefer to use
+# over the currently-untyped source
+.*/node_modules/react/react.js
+.*/node_modules/react/lib/React.js
+.*/node_modules/react/lib/ReactDOM.js
+
+# Errors from node_modules
+.*/node_modules/csjson/
+.*/node_modules/jsonlint-lines-primitives/
+
+[include]
+
+[libs]
+
+[options]
+# Work with CSS Modules
+module.system=haste
+
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
