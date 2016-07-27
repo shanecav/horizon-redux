@@ -4,8 +4,6 @@ node_js:
 script:
   - npm run clean
   - npm run build
-  - npm run test
 branches:
   only:
     - master
-after_success: npm run coverage

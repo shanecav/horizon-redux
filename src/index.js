@@ -20,6 +20,10 @@ type ActionTakerManager = {
 }
 
 export default function HorizonRedux (hz: HorizonInstance) {
+  if (typeof hz !== 'function') {
+    throw new Error('must pass HorizonRedux a Horizon.io client instance')
+  }
+
   let actionTakers:ActionTakers = []
 
   // initialize reduxDispatch
@@ -43,8 +47,6 @@ export default function HorizonRedux (hz: HorizonInstance) {
         // if this actionTaker's query has a success or error handler, add the
         // observable to subscribers and call the .subscribe() method
         if (actionTaker.successHandler || actionTaker.errorHandler) {
-          // TODO: validate successHandler and errorHandler
-
           // set up observableQuery subscriber
           const subscriber = observable.subscribe(
             actionTaker.successHandler
@@ -107,7 +109,25 @@ export default function HorizonRedux (hz: HorizonInstance) {
     successHandler: ActionTakerSuccessHandler,
     errorHandler: ActionTakerErrorHandler
   )=>ActionTakerManager = (pattern, observableQuery, successHandler, errorHandler) => {
-    // TODO: validate args
+    if (
+      typeof pattern !== 'string' &&
+      !Array.isArray(pattern) &&
+      typeof pattern !== 'function'
+    ) {
+      throw new Error('pattern must be a string, array of strings, or function')
+    }
+
+    if (typeof observableQuery !== 'function') {
+      throw new Error('observableQuery must be a function that returns an observable horizon query')
+    }
+
+    if (successHandler && typeof successHandler !== 'function') {
+      throw new Error('successHandler must be a function')
+    }
+
+    if (errorHandler && typeof errorHandler !== 'function') {
+      throw new Error('errorHandler must be a function')
+    }
 
     const actionTaker = {
       pattern,
