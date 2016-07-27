@@ -7,9 +7,7 @@ A small library that helps you connect Horizon.io with Redux in a flexible, non-
 [![Build Status](https://travis-ci.org/shanecav/horizon-redux.svg?branch=master)](https://travis-ci.org/shanecav/horizon-redux)
 
 ## What does it do?
-horizon-redux provides a light-weight and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/).
-
-It works by letting you define
+horizon-redux provides a light-weight and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you make flexible connections between Redux actions and Horizon.io events.
 
 This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
 
