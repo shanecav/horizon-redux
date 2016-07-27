@@ -7,9 +7,9 @@ A small library that helps you connect Horizon.io with Redux in a flexible, non-
 [![Build Status](https://travis-ci.org/shanecav/horizon-redux.svg?branch=master)](https://travis-ci.org/shanecav/horizon-redux)
 
 ## What does it do?
-horizon-redux provides a light-weight and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you make flexible connections between Redux actions and Horizon.io events.
+horizon-redux provides a light-weight and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you create "actionTakers" that make connections between Redux actions and Horizon.io events. Think of it as a **much** simpler version of [redux-saga](https://github.com/yelouafi/redux-saga) with built-in support for Horizon.io.
 
-This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
+All of your interaction with Horizon.io, whether you're initiating or responding to queries, happens through Redux actions. This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings tied directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
 
 horizon-redux has zero npm dependencies, and its only requirements are Horizon.io and Redux.
 
@@ -24,66 +24,27 @@ Alternatively:
 ## Usage
 
 ```js
-import { compose, applyMiddleware, createStore } from 'redux'
-import HorizonRedux from 'horizon-redux'
-import Horizon from '@horizon/client'
-
-import actions from './actions/chat'
-import rootReducer from './reducers'
-
-const horizon = Horizon({ host: 'localhost:8181' })
-horizon.connect()
-
+// initialize horizonRedux with a Horizon client instance
 const horizonRedux = HorizonRedux(horizon)
-
+// create horizon-redux middleware
 const hzMiddleware = horizonRedux.createMiddleware()
-
-// Create the Redux store
+// Create the Redux store with horizon-redux middleware
 const store = createStore(rootReducer, [], applyMiddleware(hzMiddleware))
 
-// Watch for ADD_MESSAGE_REQUEST actions and store their payload in the 'messages'
+// Add an actionTaker that watches for a WATCH_MESSAGES action. When that action
+// is dispatched, Horizon grabs the most recent 10 messages from the messages
+// table. Because we added watch(), this actionTaker's successHandler will get
+// called every time new messages are added.
 horizonRedux.addActionTaker(
-  actions.ADD_MESSAGE_REQUEST,
-  (horizon, action) =>
-    horizon('messages').store(action.payload),
-  (id, action, dispatch) => {
-    // on success, dispatch a success action
-    dispatch(actions.addMessageSuccess(id, action.payload))
-  },
-  (err, action, dispatch) => {
-    // on failure, dispatch a failure action and console.log the error
-    console.log('failed to add message:', err)
-    dispatch(actions.addMessageFailure(err, action.payload))
-  }
+  'WATCH_MESSAGES',
+  (horizon, action) => horizon('messages').order('datetime', 'descending').limit(10).watch(),
+  (result, action, dispatch) => dispatch({type: 'NEW_MESSAGES', payload: result}),
+  (err, action, dispatch) => console.log('failed to load messages:', err)
 )
 // You can add/remove actionTakers any time, even after creating the middleware.
 
-// Watch for WATCH_MESSAGES action and grab the most recent 10 messages from the
-// messages table. Because we added watch(), this actionTaker's successHandler
-// will get called every time new messages are added.
-horizonRedux.addActionTaker(
-  actions.WATCH_MESSAGES,
-  (horizon, action) =>
-    horizon('messages').order('datetime', 'descending').limit(10).watch(),
-  (result, action, dispatch) => {
-    dispatch(actions.newMessages(result))
-  },
-  (err, action, dispatch) => {
-    console.log('failed to load messages:', err)
-  }
-)
-
 // Now we can dispatch the action that tells Horizon to watch for chat messages.
-store.dispatch(actions.watchMessages())
-// ...and an action that tells Horizon to store a new message in 'messages'
-store.dispatch(actions.addMessageRequest({
-  text: event.target.value,
-  datetime: new Date()
-}))
-// We don't have to worry about whether or not the Horizon client has finished
-// connecting to the Horizon server, because horizonRedux internally queues
-// actions that are dispatched through its middleware while Horizon is not
-// connected, and will handle them as soon as Horizon is ready.
+store.dispatch({ type: 'WATCH_MESSAGES' })
 
 // addActionTaker returns a manager for that actionTaker with a remove() method.
 // Removing an actionTaker automatically unsubscribes from all Horizon subscriptions
