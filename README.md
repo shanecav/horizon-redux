@@ -1,15 +1,12 @@
-> ### Version 2.0.0 Released
-> This version is a complete re-write with a very different API. If you've already used 1.x, you'll want to read through this README again to see how this version works. I think you'll find it easier and more powerful.
-
 # horizon-redux
 A small library that helps you connect Horizon.io with Redux in a flexible, non-intrusive way.
 
 [![Build Status](https://travis-ci.org/shanecav/horizon-redux.svg?branch=master)](https://travis-ci.org/shanecav/horizon-redux)
 
 ## What does it do?
-horizon-redux provides a light-weight and flexible interface for connecting [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you create "actionTakers" that make connections between Redux actions and Horizon.io events. Think of it as a **much** simpler version of [redux-saga](https://github.com/yelouafi/redux-saga) with built-in support for Horizon.io.
+horizon-redux helps you connect [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you create "actionTakers" that respond to matching actions with a Horizon query, and in turn respond to the Horizon query subscription results (usually by dispatching another action). You can manage these actionTakers from anywhere in your app, and at any time in the app's lifecycle.
 
-All of your interaction with Horizon.io, whether you're initiating or responding to queries, happens through Redux actions. This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings tied directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
+All of your interactions with Horizon.io, whether you're initiating or responding to queries, happen through Redux actions. This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings tied directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
 
 horizon-redux has zero npm dependencies, and its only requirements are Horizon.io and Redux.
 
@@ -58,7 +55,7 @@ someActionTaker.remove()
 * `horizonRedux` stores an array of actionTakers internally, which the middleware returned by `createMiddleware()` accesses. This allows you to add/remove actionTakers at any time, and the middleware will respond accordingly.
 * If the Horizon client instance passed to `HorizonRedux` isn't connected, the returned `horizonRedux` instance will internally queue all actions passed through its middleware, and then replay them to itself once the Horizon client instance connects to the Horizon server. This way, no actions are lost during connection downtime.
 
-#### Check out the 'chat-app' example in this repo for a working example based on the chat-app example from Horizon.io
+#### Check out the [chat-app](examples/chat-app) example in this repo for a basic working example based on the chat-app example from Horizon.io
 
 ## API
 
@@ -116,6 +113,10 @@ horizonRedux.addActionTaker(
   }
 )
 ```
+
+## Questions/Comments/Issues?
+
+I'm very open to feedback, and will respond to issues quickly. Feel free to [get in touch](https://twitter.com/shanecav)!
 
 ## License
 

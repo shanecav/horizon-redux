@@ -1,6 +1,6 @@
 {
   "name": "horizon-redux",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A small library that helps you connect Horizon.io with Redux in a flexible, non-intrusive way.",
   "main": "lib/index.js",
   "files": [
