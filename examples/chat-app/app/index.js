@@ -35,10 +35,10 @@ const store = createStore(
 // I've added them here for simplicity, but in a real app they could live
 // wherever makes the most sense with the app's structure.
 
-// Watch for ADD_MESSAGE_REQUEST actions and store their payload in the messages table
-// If successful, dispatch ADD_MESSAGE_SUCCESS. If there's an error, dispatch
-// ADD_MESSAGE_FAILURE and log a message to the console.
-horizonRedux.addActionTaker(
+// Watch for all ADD_MESSAGE_REQUEST actions and store their payload in the
+// messages table. If successful, dispatch ADD_MESSAGE_SUCCESS. If there's an
+// error, dispatch ADD_MESSAGE_FAILURE and log a message to the console.
+horizonRedux.takeEvery(
   ADD_MESSAGE_REQUEST,
   (horizon, action) =>
     horizon('messages').store(action.payload),
@@ -54,13 +54,14 @@ horizonRedux.addActionTaker(
   }
 )
 
-// Watch for WATCH_MESSAGES action and grab the most recent 10 messages from the
-// messages table. Because we added watch(), this actionTaker's successHandler
-// will get called every time new messages are added.
-horizonRedux.addActionTaker(
+// Watch for WATCH_MESSAGES action and grab the most recent messages from the
+// messages table. The max number of messages to retrieve is set by the matching
+// dispatched action (defaults to 10). Because we added watch(), this
+// actionTaker's successHandler will get called every time new messages are added.
+horizonRedux.takeLatest(
   WATCH_MESSAGES,
   (horizon, action) =>
-    horizon('messages').order('datetime', 'descending').limit(10).watch(),
+    horizon('messages').order('datetime', 'descending').limit(action.payload || 10).watch(),
   (result, action, dispatch) => {
     dispatch(newMessages(result))
   },
@@ -69,13 +70,16 @@ horizonRedux.addActionTaker(
   }
 )
 
-// Now we can dispatch the initial action that tells horizon to watch for chat messages.
+// Now we can dispatch the initial action that tells horizon to watch for chat
+// messages.
 //
 // We don't have to worry about whether or not the Horizon client has finished
 // connecting to the Horizon server, because horizonRedux internally queues
 // actions that are dispatched through its middleware while Horizon is not
 // connected, and will handle them as soon as Horizon is ready.
-store.dispatch(watchMessages())
+store.dispatch(watchMessages(10))
+
+setTimeout(() => store.dispatch(watchMessages(5)), 5000)
 
 const appNode = document.createElement('div')
 document.body.appendChild(appNode)

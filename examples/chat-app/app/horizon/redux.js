@@ -1,4 +1,4 @@
-import horizon from './connect'
+import horizon from './connection'
 
 let HorizonRedux
 if (process.env.USE_LIB === true) {

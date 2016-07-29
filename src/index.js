@@ -7,17 +7,25 @@ type ActionTakerPattern = ActionType|Array<ActionType>|(a:Action)=>boolean
 type ActionTakerObservableQuery = (hz:HorizonInstance, action:Action)=>HorizonObservable
 type ActionTakerSuccessHandler = (result:any, action:Action, dispatch:Dispatch)=>void
 type ActionTakerErrorHandler = (err:any, action:Action, dispatch:Dispatch)=>void
+type ActionTakerType = string
 type ActionTaker = {
   pattern: ActionTakerPattern,
   observableQuery: ActionTakerObservableQuery,
   successHandler?: ActionTakerSuccessHandler,
   errorHandler?: ActionTakerErrorHandler,
-  subscribers: []
+  subscribers: [],
+  type: ActionTakerType
 }
 type ActionTakers = Array<ActionTaker>
 type ActionTakerManager = {
   remove: ()=>void
 }
+type ActionTakerAdder = (
+  pattern: ActionTakerPattern,
+  observableQuery: ActionTakerObservableQuery,
+  successHandler: ActionTakerSuccessHandler,
+  errorHandler: ActionTakerErrorHandler
+)=>ActionTakerManager
 
 export default function HorizonRedux (hz: HorizonInstance) {
   if (typeof hz !== 'function') {
@@ -44,8 +52,8 @@ export default function HorizonRedux (hz: HorizonInstance) {
       ) {
         const observable = actionTaker.observableQuery(hz, action)
 
-        // if this actionTaker's query has a success or error handler, add the
-        // observable to subscribers and call the .subscribe() method
+        // if this actionTaker's query has a success or error handler, set up
+        // the new subscription
         if (actionTaker.successHandler || actionTaker.errorHandler) {
           // set up observableQuery subscriber
           const subscriber = observable.subscribe(
@@ -61,7 +69,17 @@ export default function HorizonRedux (hz: HorizonInstance) {
 
           // add observable to actionTaker's subscribers so it can be
           // unsubscribed if the actionTaker is removed
-          actionTaker.subscribers.push(subscriber)
+          if (actionTaker.type === 'takeEvery') {
+            actionTaker.subscribers.push(subscriber)
+          } else if (actionTaker.type === 'takeLatest') {
+            // Ensure that this actionTaker has only one active subscription,
+            // which is based on the latest matching action dispatched
+            actionTaker.subscribers.forEach((subscriber) => {
+              subscriber.unsubscribe()
+            })
+            actionTaker.subscribers = [subscriber]
+          }
+          console.log(actionTaker.pattern, 'subscribers:', actionTaker.subscribers)
         }
       }
     })
@@ -107,8 +125,9 @@ export default function HorizonRedux (hz: HorizonInstance) {
     pattern: ActionTakerPattern,
     observableQuery: ActionTakerObservableQuery,
     successHandler: ActionTakerSuccessHandler,
-    errorHandler: ActionTakerErrorHandler
-  )=>ActionTakerManager = (pattern, observableQuery, successHandler, errorHandler) => {
+    errorHandler: ActionTakerErrorHandler,
+    type: ActionTakerType
+  )=>ActionTakerManager = (pattern, observableQuery, successHandler, errorHandler, type = 'takeEvery') => {
     if (
       typeof pattern !== 'string' &&
       !Array.isArray(pattern) &&
@@ -134,6 +153,7 @@ export default function HorizonRedux (hz: HorizonInstance) {
       observableQuery,
       successHandler,
       errorHandler,
+      type,
       subscribers: []
     }
 
@@ -153,8 +173,14 @@ export default function HorizonRedux (hz: HorizonInstance) {
     }
   }
 
+  const takeEvery: ActionTakerAdder = (pattern, observableQuery, successHandler, errorHandler, type) => addActionTaker(pattern, observableQuery, successHandler, errorHandler, 'takeEvery')
+
+  const takeLatest: ActionTakerAdder = (pattern, observableQuery, successHandler, errorHandler, type) => addActionTaker(pattern, observableQuery, successHandler, errorHandler, 'takeLatest')
+
   return {
     createMiddleware,
-    addActionTaker
+    addActionTaker,
+    takeEvery,
+    takeLatest
   }
 }

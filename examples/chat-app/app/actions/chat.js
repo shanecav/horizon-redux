@@ -2,7 +2,10 @@ import { createAction } from 'redux-actions'
 
 // A new complete set of messages has been fetched from Horizon
 export const WATCH_MESSAGES = 'WATCH_MESSAGES'
-export const watchMessages = createAction(WATCH_MESSAGES)
+export const watchMessages = createAction(
+  WATCH_MESSAGES,
+  (limit) => limit
+)
 
 // A new complete set of messages has been fetched from Horizon
 export const NEW_MESSAGES = 'NEW_MESSAGES'

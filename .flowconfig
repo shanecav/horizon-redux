@@ -1,7 +1,8 @@
 [ignore]
-dist
-es
-lib
+.*/dist/.*
+.*/es/.*
+.*/lib/.*
+.*/examples/.*
 
 [include]
 
