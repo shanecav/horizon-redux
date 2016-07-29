@@ -1,6 +1,7 @@
 import { createAction } from 'redux-actions'
 
-// A new complete set of messages has been fetched from Horizon
+// Tell horizon-redux to start watching for new messages in the 'messages' table
+// Limit determines the max number of messages to return
 export const WATCH_MESSAGES = 'WATCH_MESSAGES'
 export const watchMessages = createAction(
   WATCH_MESSAGES,

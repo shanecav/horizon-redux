@@ -79,8 +79,6 @@ horizonRedux.takeLatest(
 // connected, and will handle them as soon as Horizon is ready.
 store.dispatch(watchMessages(10))
 
-setTimeout(() => store.dispatch(watchMessages(5)), 5000)
-
 const appNode = document.createElement('div')
 document.body.appendChild(appNode)
 
