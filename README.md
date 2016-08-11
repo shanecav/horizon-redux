@@ -45,7 +45,8 @@ store.dispatch({ type: 'WATCH_MESSAGES' })
 
 // addActionTaker returns a manager for that actionTaker with a remove() method.
 // Removing an actionTaker automatically unsubscribes from all Horizon subscriptions
-// associated with it, and removes it from horizonRedux.
+// associated with it, and removes it from horizonRedux. (takeEvery and
+// takeLatest also return a manager.)
 const someActionTaker = horizonRedux.addActionTaker(/* ... */)
 someActionTaker.remove()
 ```
@@ -95,7 +96,7 @@ Adds an actionTaker to horizonRedux's internal array. Every action that goes thr
 2. `observableQuery` - A function that takes a Horizon client instance and an action, and returns a Horizon query. The query must be an "observable" type (`fetch()`, `watch()`, `store()`, `upsert()`, `insert()`, `replace()`, `update()`, `remove()`, or `removeAll()`). Do not call the `subscribe()` method on the query here - HorizonRedux takes care of that automatically.
 3. `successHandler` (optional) - A function that takes result (the result of the query), action (the action associated with that query) and the Redux store's dispatch method. You can handle the successful query however you'd like - usually by dispatching another action with the results.
 4. `errorHandler` (optional) - A function that takes the error, action (the action associated with that query) and the Redux store's dispatch method. You can handle an error scenario however you'd like.
-5. `type` (optional) - A string representing the type of actionTaker to add. Must be either `'takeEvery'` or `'takeLatest'` (defaults to `'takeEvery'` if omitted). This argument determines how the actionTaker manages its subscriptions when new matching actions are dispatched (only applicable if either the success or error handlers are provided):
+5. `type` (optional) - A string representing the type of actionTaker to add. Must be either `'takeEvery'` or `'takeLatest'` (defaults to `'takeEvery'` if omitted). This argument determines how the actionTaker manages its subscriptions when new matching actions are dispatched:
     * If `'takeEvery'`, the actionTaker will add an additional subscription every time a matching action is dispatched.
     * If `'takeLatest'`, the actionTaker will replace the existing subscription (first calling its `unsubscribe()` method) with a new subscription every time a matching action is dispatched. Keep in mind that your success/error handlers will no longer fire after the old subscription has been unsubscribed.
 
@@ -124,18 +125,24 @@ horizonRedux.addActionTaker(
   },
   'takeLatest'
 )
+
+// Start watching messages and return 10 at a time
+store.dispatch({ type: 'WATCH_MESSAGES', payload: { limit: 10 } })
+
+// ...now return 20 at a time instead
+store.dispatch({ type: 'WATCH_MESSAGES', payload: { limit: 20 } })
 ```
 
 ---
 
 ### .takeLatest(pattern, observableQuery, successHandler, errorHandler)
 
-Identical to `addActionTaker(...)` except that the type is automatically set to `'takeLatest'` (see above).
+Identical to `addActionTaker(...)` except that the type is automatically set to `'takeLatest'` (see above). Matching actions will replace the subscription from the previous matching action (first calling its `unsubscribe()` method) with the new subscription.
 
 #### Example:
 
 ```js
-// This is equivalent to the 'addActionCreator' example above.
+// This is equivalent to the 'addActionTaker' example above.
 horizonRedux.takeLatest(
   'WATCH_MESSAGES',
   (horizon, action) =>
@@ -147,13 +154,19 @@ horizonRedux.takeLatest(
     console.log('failed to load messages:', err)
   }
 )
+
+// Start watching messages and return 10 at a time
+store.dispatch({ type: 'WATCH_MESSAGES', payload: { limit: 10 } })
+
+// ...now return 20 at a time instead
+store.dispatch({ type: 'WATCH_MESSAGES', payload: { limit: 20 } })
 ```
 
 ---
 
 ### .takeEvery(pattern, observableQuery, successHandler, errorHandler)
 
-Identical to `addActionTaker(...)` except that the type is automatically set to `'takeEvery'` (see above).
+Identical to `addActionTaker(...)` except that the type is automatically set to `'takeEvery'` (see above). Matching actions will add new subscriptions (without replacing previous ones).
 
 #### Example:
 
