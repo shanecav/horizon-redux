@@ -4,11 +4,13 @@ A small library that helps you connect Horizon.io with Redux in a flexible, non-
 [![Build Status](https://travis-ci.org/shanecav/horizon-redux.svg?branch=master)](https://travis-ci.org/shanecav/horizon-redux)
 
 ## What does it do?
-horizon-redux helps you connect [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you create "actionTakers" that respond to matching actions with a Horizon query, and in turn respond to the Horizon query subscription results (usually by dispatching another action). You can manage these actionTakers from anywhere in your app, and at any time in the app's lifecycle.
+horizon-redux helps you connect [Redux](https://github.com/reactjs/redux) with [Horizon.io](http://horizon.io/). It works by letting you create simple "actionTakers" that respond to matching actions with a Horizon query, and in turn respond to the Horizon query subscription results (usually by dispatching another action).
 
-All of your interactions with Horizon.io, whether you're initiating or responding to queries, happen through Redux actions. This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings tied directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
+All of your interactions with Horizon.io, whether you're initiating or responding to queries, will happen through Redux actions. This approach allows you to use Redux to manage your app's entire state, as opposed to having external Horizon.io bindings tied directly to your UI components. This way, you can enjoy the simplicity of Horizon.io without losing the benefits of a well-structured Redux app.
 
 horizon-redux has zero npm dependencies, and its only requirements are Horizon.io and Redux.
+
+horizon-redux is compatible with Horizon.io 1.x and 2.x.
 
 ## Installation
 
@@ -21,6 +23,7 @@ Alternatively:
 ## Usage
 
 ```js
+import HorizonRedux from 'horizon-redux'
 // initialize horizonRedux with a Horizon client instance
 const horizonRedux = HorizonRedux(horizon)
 // create horizon-redux middleware
@@ -34,27 +37,25 @@ const store = createStore(rootReducer, [], applyMiddleware(hzMiddleware))
 // called every time new messages are added.
 horizonRedux.takeLatest(
   'WATCH_MESSAGES',
-  (horizon, action) => horizon('messages').order('datetime', 'descending').limit(10).watch(),
+  (horizon, action) => horizon('messages').order('datetime', 'descending').limit(action.payload).watch(),
   (result, action, dispatch) => dispatch({type: 'NEW_MESSAGES', payload: result}),
   (err, action, dispatch) => console.log('failed to load messages:', err)
 )
-// You can add/remove actionTakers any time, even after creating the middleware.
+// Notice how we added an actionTaker after the middleware has already been
+// added to the store - horizon-redux internally stores an array of actionTakers,
+// which the middleware returned by `createMiddleware()` accesses. This allows
+// you to add/remove actionTakers at any time.
 
 // Now we can dispatch the action that tells Horizon to watch for chat messages.
-store.dispatch({ type: 'WATCH_MESSAGES' })
+store.dispatch({ type: 'WATCH_MESSAGES', payload: 10 })
 
-// addActionTaker returns a manager for that actionTaker with a remove() method.
+// addActionTaker returns an actionTakerManager with a remove() method.
 // Removing an actionTaker automatically unsubscribes from all Horizon subscriptions
 // associated with it, and removes it from horizonRedux. (takeEvery and
 // takeLatest also return a manager.)
 const someActionTaker = horizonRedux.addActionTaker(/* ... */)
 someActionTaker.remove()
 ```
-
-#### Some key points to note:
-
-* `horizonRedux` stores an array of actionTakers internally, which the middleware returned by `createMiddleware()` accesses. This allows you to add/remove actionTakers at any time, and the middleware will respond accordingly.
-* If the Horizon client instance passed to `HorizonRedux` isn't connected, the returned `horizonRedux` instance will internally queue all actions passed through its middleware, and then replay them to itself once the Horizon client instance connects to the Horizon server. This way, no actions are lost during connection downtime.
 
 #### Check out the [chat-app](examples/chat-app) example in this repo for a basic working example based on the chat-app example from Horizon.io
 
@@ -188,6 +189,12 @@ horizonRedux.takeEvery(
 ## Questions/Comments/Issues?
 
 I'm very open to feedback, and will respond to issues quickly. Feel free to [get in touch](https://twitter.com/shanecav)!
+
+## Alternative Approaches
+
+1. [redux-saga](https://github.com/yelouafi/redux-saga) is a great option if you find that you need more power than horizon-redux offers. redux-saga is a much bigger library with a larger API. With this approach, you'll likely end up writing more code than you would with horizon-redux, but it may be necessary for more complex apps. [Check out an example app using Horizon.io with redux-saga](https://github.com/shanecav/horizon-redux-saga).
+
+2. If you're already comfortable with RxJS, then [redux-observable](https://redux-observable.js.org/) may feel more natural to you than horizon-redux. Because most Horizon.io collection methods return RxJS Observables, using redux-observable should be pretty easy to integrate.
 
 ## License
 

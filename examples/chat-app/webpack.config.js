@@ -24,7 +24,7 @@ var common = {
   ]
 }
 
-if (TARGET === 'start' || TARGET === 'start:uselib') {
+if (TARGET === 'start') {
   module.exports = merge(common, {
     devtool: 'source-map',
     entry: [

@@ -1,0 +1,15 @@
+// @flow
+
+import type { ActionTakerAdder } from '../types/horizon-redux'
+import type { HorizonInstance } from '../types/horizon'
+import type { Middleware } from '../types/redux'
+
+/**
+ * horizon-redux module interface
+ */
+declare module.exports: (hz: HorizonInstance) => {
+  createMiddleware: () => Middleware,
+  addActionTaker: ActionTakerAdder,
+  takeEvery: ActionTakerAdder,
+  takeLatest: ActionTakerAdder
+}

@@ -1,7 +1,10 @@
 [ignore]
+.*/dist/.*
+.*/node_modules/fbjs/lib/.*
 
 [include]
-./src
+../../src/
+../../types/
 
 [libs]
 

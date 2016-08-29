@@ -1,3 +1,5 @@
+// @flow
+
 import horizon from './connection'
 import HorizonRedux from '../../../../src'
 

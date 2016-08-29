@@ -1,6 +1,7 @@
+// @flow
+
 'use strict'
 
-require('es6-promise').polyfill()
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
@@ -63,6 +64,7 @@ horizonRedux.takeLatest(
   (horizon, action) =>
     horizon('messages').order('datetime', 'descending').limit(action.payload || 10).watch(),
   (result, action, dispatch) => {
+    console.log('dispatch:', dispatch)
     dispatch(newMessages(result))
   },
   (err, action, dispatch) => {
@@ -72,11 +74,6 @@ horizonRedux.takeLatest(
 
 // Now we can dispatch the initial action that tells horizon to watch for chat
 // messages.
-//
-// We don't have to worry about whether or not the Horizon client has finished
-// connecting to the Horizon server, because horizonRedux internally queues
-// actions that are dispatched through its middleware while Horizon is not
-// connected, and will handle them as soon as Horizon is ready.
 store.dispatch(watchMessages(10))
 
 const appNode = document.createElement('div')

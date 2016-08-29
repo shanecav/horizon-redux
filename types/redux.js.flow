@@ -20,3 +20,5 @@ export type Store = {
   subscribe: (listener: () => void) => () => void,
   replaceReducer: (reducer: Reducer<any, any>) => void
 }
+export type MiddlewareAPI = { dispatch: Dispatch, getState: () => State }
+export type Middleware = (api: MiddlewareAPI) => (next: Dispatch) => Dispatch
