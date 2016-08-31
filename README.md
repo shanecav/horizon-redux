@@ -18,7 +18,7 @@ horizon-redux is compatible with Horizon.io 1.x and 2.x.
 
 Alternatively:
 
-`<script src="https://npmcdn.com/horizon-redux/dist/horizon-redux.min.js"></script>` (exposes window.HorizonRedux as a global variable)
+`<script src="https://unpkg.com/horizon-redux/dist/horizon-redux.min.js"></script>` (exposes window.HorizonRedux as a global variable)
 
 ## Usage
 
