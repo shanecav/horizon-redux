@@ -12,6 +12,8 @@ horizon-redux has zero npm dependencies, and its only requirements are Horizon.i
 
 horizon-redux is compatible with Horizon.io 1.x and 2.x.
 
+_Interested in a different approach? See the [Alternative Approaches](#alternative-approaches) section below for some different options for integrating Horizon with Redux._
+
 ## Installation
 
 `npm i -S horizon-redux`
