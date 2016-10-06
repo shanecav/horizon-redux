@@ -192,9 +192,9 @@ I'm very open to feedback, and will respond to issues quickly. Feel free to [get
 
 ## Alternative Approaches
 
-1. [redux-saga](https://github.com/yelouafi/redux-saga) is a great option if you find that you need more power than horizon-redux offers. redux-saga is a much bigger library with a larger API. With this approach, you'll likely end up writing more code than you would with horizon-redux, but it may be necessary for more complex apps. [Check out an example app using Horizon.io with redux-saga](https://github.com/shanecav/horizon-redux-saga).
+1. [redux-observable](https://redux-observable.js.org/) is honestly a more elegant approach. If you aren't interested in learning RxJS, then horizon-redux will work fine, but redux-observable is a great library made by smart people (and it's worth learning RxJS if you're using Horizon). Because most Horizon.io collection methods return RxJS Observables, using redux-observable should be pretty easy to integrate.
 
-2. If you're already comfortable with RxJS, then [redux-observable](https://redux-observable.js.org/) may feel more natural to you than horizon-redux. Because most Horizon.io collection methods return RxJS Observables, using redux-observable should be pretty easy to integrate.
+2. [redux-saga](https://github.com/yelouafi/redux-saga) is a great option if you find that you need more power than horizon-redux offers. redux-saga is a much bigger library with a larger API. With this approach, you'll likely end up writing more code than you would with horizon-redux, but it may be necessary for more complex apps. [Check out an example app using Horizon.io with redux-saga](https://github.com/shanecav/horizon-redux-saga).
 
 ## License
 
