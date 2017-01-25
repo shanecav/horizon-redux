@@ -1,7 +1,7 @@
 // @flow
 
 import type { HorizonInstance } from '../types/horizon'
-import type { Action, Dispatch } from '../types/redux'
+import type { Action, Dispatch, GetState } from '../types/redux'
 import type {
   ActionTaker,
   ActionTakers
@@ -32,12 +32,13 @@ export function actionTakerMatchesAction (
 export function createActionHandler (
   hz: HorizonInstance,
   actionTakers: ActionTakers,
-  dispatch: Dispatch
+  dispatch: Dispatch,
+  getState: GetState
 ) {
   return (action: Action): void => {
     actionTakers.forEach((actionTaker) => {
       if (actionTakerMatchesAction(action, actionTaker)) {
-        const observable = actionTaker.observableQuery(hz, action)
+        const observable = actionTaker.observableQuery(hz, action, getState)
 
         // if this actionTaker's query has a success or error handler, set up
         // the new subscription
