@@ -1,10 +1,10 @@
 // @flow
 
-import type { Action, ActionType, Dispatch } from './redux'
+import type { Action, ActionType, Dispatch, GetState } from './redux'
 import type { HorizonInstance, HorizonObservable } from './horizon'
 
 export type ActionTakerPattern = ActionType|Array<ActionType>|(a:Action)=>boolean
-export type ActionTakerObservableQuery = (hz:HorizonInstance, action:Action)=>HorizonObservable
+export type ActionTakerObservableQuery = (hz:HorizonInstance, action:Action, getState:GetState)=>HorizonObservable
 export type ActionTakerSuccessHandler = (result:any, action:Action, dispatch:Dispatch)=>void
 export type ActionTakerErrorHandler = (err:any, action:Action, dispatch:Dispatch)=>void
 export type ActionTakerType = string
