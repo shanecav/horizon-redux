@@ -16,7 +16,7 @@ export default function createMiddlewareCreator (
 ) {
   return (): Middleware => ({ dispatch, getState }) => {
     // create the actionHandler
-    const handleAction = createActionHandler(hz, actionTakers, dispatch)
+    const handleAction = createActionHandler(hz, actionTakers, dispatch, getState)
 
     return (next: Dispatch) => (action: Action) => {
       handleAction(action)

@@ -14,6 +14,7 @@ export type Action = {
 }
 export type Reducer<State, Action> = (state: State, action: Action) => State
 export type Dispatch = (a: Action) => any
+export type GetState = () => any
 export type Store = {
   dispatch: Dispatch,
   getState: () => State,
