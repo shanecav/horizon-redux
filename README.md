@@ -39,7 +39,7 @@ const store = createStore(rootReducer, [], applyMiddleware(hzMiddleware))
 // called every time new messages are added.
 horizonRedux.takeLatest(
   'WATCH_MESSAGES',
-  (horizon, action) => horizon('messages').order('datetime', 'descending').limit(action.payload).watch(),
+  (horizon, action, getState) => horizon('messages').order('datetime', 'descending').limit(action.payload).watch(),
   (result, action, dispatch) => dispatch({type: 'NEW_MESSAGES', payload: result}),
   (err, action, dispatch) => console.log('failed to load messages:', err)
 )
@@ -96,7 +96,7 @@ Adds an actionTaker to horizonRedux's internal array. Every action that goes thr
     * If it's a string, matches if `pattern === action.type`
     * If it's an array of strings, matches if any elements of the array are strictly equal to `action.type`
     * If it's a function, matches if pattern(action) returns a truthy value
-2. `observableQuery` - A function that takes a Horizon client instance and an action, and returns a Horizon query. The query must be an "observable" type (`fetch()`, `watch()`, `store()`, `upsert()`, `insert()`, `replace()`, `update()`, `remove()`, or `removeAll()`). Do not call the `subscribe()` method on the query here - HorizonRedux takes care of that automatically.
+2. `observableQuery` - A function that takes a Horizon client instance, an action, and your Redux store's `getState` method, and returns a Horizon query. The query must be an "observable" type (`fetch()`, `watch()`, `store()`, `upsert()`, `insert()`, `replace()`, `update()`, `remove()`, or `removeAll()`). Do not call the `subscribe()` method on the query here - HorizonRedux takes care of that automatically.
 3. `successHandler` (optional) - A function that takes result (the result of the query), action (the action associated with that query) and the Redux store's dispatch method. You can handle the successful query however you'd like - usually by dispatching another action with the results.
 4. `errorHandler` (optional) - A function that takes the error, action (the action associated with that query) and the Redux store's dispatch method. You can handle an error scenario however you'd like.
 5. `type` (optional) - A string representing the type of actionTaker to add. Must be either `'takeEvery'` or `'takeLatest'` (defaults to `'takeEvery'` if omitted). This argument determines how the actionTaker manages its subscriptions when new matching actions are dispatched:
@@ -118,7 +118,7 @@ An actionTaker "manager" with a single method: `remove()`. Calling the `remove()
 // action is dispatched.
 horizonRedux.addActionTaker(
   'WATCH_MESSAGES',
-  (horizon, action) =>
+  (horizon, action, getState) =>
     horizon('messages').order('datetime', 'descending').limit(action.payload.limit || 10).watch(),
   (result, action, dispatch) => {
     dispatch(newMessages(result))
@@ -148,7 +148,7 @@ Identical to `addActionTaker(...)` except that the type is automatically set to 
 // This is equivalent to the 'addActionTaker' example above.
 horizonRedux.takeLatest(
   'WATCH_MESSAGES',
-  (horizon, action) =>
+  (horizon, action, getState) =>
     horizon('messages').order('datetime', 'descending').limit(action.payload.limit || 10).watch(),
   (result, action, dispatch) => {
     dispatch(newMessages(result))
@@ -182,7 +182,7 @@ Identical to `addActionTaker(...)` except that the type is automatically set to 
 // since been added.
 horizonRedux.takeEvery(
   'ADD_MESSAGE_REQUEST',
-  (horizon, action) => horizon('messages').store(action.payload),
+  (horizon, action, getState) => horizon('messages').store(action.payload),
   (id, action, dispatch) => dispatch(addMessageSuccess(id, action.payload)),
   (err, action, dispatch) => dispatch(addMessageFailure(err, action.payload))
 )
