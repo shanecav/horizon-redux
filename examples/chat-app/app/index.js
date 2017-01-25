@@ -41,7 +41,7 @@ const store = createStore(
 // error, dispatch ADD_MESSAGE_FAILURE and log a message to the console.
 horizonRedux.takeEvery(
   ADD_MESSAGE_REQUEST,
-  (horizon, action) =>
+  (horizon, action, getState) =>
     horizon('messages').store(action.payload),
   (id, action, dispatch) => {
     // the success handler for write queries doesn't occur until the write is
@@ -61,7 +61,7 @@ horizonRedux.takeEvery(
 // actionTaker's successHandler will get called every time new messages are added.
 horizonRedux.takeLatest(
   WATCH_MESSAGES,
-  (horizon, action) =>
+  (horizon, action, getState) =>
     horizon('messages').order('datetime', 'descending').limit(action.payload || 10).watch(),
   (result, action, dispatch) => {
     console.log('dispatch:', dispatch)
